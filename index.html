@@ -11,8 +11,8 @@
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="css/reveal.min.css">
-		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/moon.css" id="theme">
 
 		<!-- For syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -41,10 +41,101 @@
 			<div class="slides">
 				<section>
 					<h1>Angular Tuts</h1>
+					<h3>An introduction to AngularJS</h3>
+					<p><small>By <a href="https://github.com/kristofmic">Chris Hourihan</a></small></p>
+				</section>
+
+				<section>
+					<h2>Table of Contents</h2>
+					<ol>
+						<li><a href="#/2">Angular Fundamentals</a></li>
+						<li><a href="#/6">Modules</a></li>
+						<li><a href="#/">$scope</a></li>
+						<li><a href="#/">Controllers</a></li>
+						<li><a href="#/">Templating</a></li>
+						<li><a href="#/">Providers (Services and Factories)</a></li>
+						<li><a href="#/">Directives (core / custom)</a></li>
+						<li><a href="#/">Filters (core / custom)</a></li>
+						<li><a href="#/">Routing (ui-router)</a></li>
+						<li><a href="#/">Server Interactions ($http, $resource, and $q)</a></li>
+						<li><a href="#/">Testing (unit and e2e)</a></li>
+					</ol>
+				</section>
+
+				<section>
+					<h1>Fundamentals</h1>
+				</section>
+
+				<section>
+					<h2>What is Angular?</h2>
+					<ul>
+						<li>MVW or MV* framework</li>
+						<li>Designed to <strong>enhance</strong> HTML, making it dynamic</li>
+						<li>Removes DOM manipulation</li>
+						<li>Unopinionated approach</li>
+					</ul>
+
+					<aside class="notes">
+
+						<ul>
+							<li>
+								View it as an MVVM framework, where the VM is specifically targeted at linking the UI (View) to the Data/Logic (Model) via two-way data binding.
+							</li>
+							<li>
+								Data lives in a Model, our HTML lives as a tiny template to be rendered as a View, and we use a Controller to connect the two, driving Model and View value changes.
+							</li>
+							<li>
+								Angular keeps the DOM updated with any Model changes, and updates the underlying Model when a DOM input changes. The  Model is simply a pure JavaScript Object for data-binding purposes.
+							</li>
+							<li>
+								Unlike Ember or Rails, Angular provides the tools to develop structured, rich client-side applications, but leaves the structure and organization up to the developer to decide. This can be a double-edged sword. Some people like the freedom to build things in a way they are comfortable with, however in larger teams it can become difficult to coordinate and it's easier to go down a wrong path that must be painfully changed later.
+							</li>
+						</ul>
+					</aside>
+				</section>
+
+				<section>
+					<h2>Two Way Data-binding</h2>
+					<ul>
+						<li>Synchronizes the View with the Model and vice-versa</li>
+						<li>The underlying model is a plain-old JavaScript Object</li>
+						<li>The models are easily parsed to and from JSON, making server-side communication simple</li>
+						<li>Binding occurs in the templates via <code>{{}}</code> or <code>ng-bind</code></li>
+						<li>Models can also be two way data-bound via the <code>ng-model</code> directive</li>
+					</ul>
+
+					<aside class="notes">
+						<ul>
+							<li>Model becomes the single source of truth since it is always current</li>
+							<li>Object Literals, Arrays, Strings, Numbers, Booleans</li>
+						</ul>
+					</aside>
+
+				</section>
+
+				<section>
+					<h2>Dependency Injection</h2>
+					<ul>
+						<li>Software design pattern for resolving dependencies</li>
+						<li>AngularJS provides the <code>$injector</code> service which does this automatically by inspecting the arguments of a function</li>
+						<li>To handle minification/uglification, Angular provides an alernate syntax via an Array and Strings</li>
+					</ul>
+
+					<aside class="notes">
+						<ul>
+							<li>Dependencies are explicitly declared and passed to the object or function</li>
+							<li>The $injector typically does not need to be called explicitly, Angular does the resolving of dependencies for us</li>
+							<li>Angular will throw an error if it cannot resolve a dependency</li>
+						</ul>
+					</aside>
+
+				</section>
+
+				<section>
+					<h1>Modules</h1>
 				</section>
 
 			</div>
-
 		</div>
 
 		<script src="lib/js/head.min.js"></script>
