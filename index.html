@@ -56,7 +56,7 @@
 						<li><a href="#/7">Providers (Services and Factories)</a></li>
 						<li><a href="#/8">Directives (core / custom)</a></li>
 						<li><a href="#/9">Filters (core / custom)</a></li>
-						<li><a href="#/10">Server Interactions ($http, $resource, and $q)</a></li>
+						<li><a href="#/10">Server Interactions ($http and $q)</a></li>
 						<li><a href="#/11">Testing (unit and e2e)</a></li>
 					</ol>
 				</section>
@@ -79,7 +79,7 @@
 
 							<ul>
 								<li>
-									View it as an MVVM framework, where the VM is specifically targeted at linking the UI (View) to the Data/Logic (Model) via two way data-binding.
+									View it as an MVVM framework, where the VM is specifically targeted at linking the UI (View) to the Data/Logic (Model) via two-way data binding.
 								</li>
 								<li>
 									Data lives in a Model, our HTML lives as a tiny template to be rendered as a View, and we use a Controller to connect the two, driving Model and View value changes.
@@ -95,7 +95,7 @@
 					</section>
 
 					<section>
-						<h2>Two Way Data-binding</h2>
+						<h2>Two-Way Data binding</h2>
 						<ul>
 							<li>Synchronizes the View with the Model and vice-versa</li>
 							<li>The underlying model is a plain-old JavaScript Object</li>
@@ -217,7 +217,7 @@
 						<aside class="notes">
 							<ul>
 								<li>$scope is the link between your presentation layer (View) and the data/business logic (Model)</li>
-								<li>It enables the two way data-binding</li>
+								<li>It enables the two-way data binding</li>
 								<li>The DOM outside of the scope of the Controller (or Directive) is not accessible via the $scope</li>
 								<li>Properties on $rootScope will be accessible via other $scopes through the prototype chain of inheritance (NOTE: be careful about what you inherit. It's easy to shadow parent properties with child properties that are no longer linked).</li>
 							</ul>
@@ -607,11 +607,10 @@ $filter('filterName')(object, expression, comparator)
 
 						<aside class="notes">
 							<ul>
-								<li>
-									object/object_expression is the JavaScript Object to be passed through the filter function
-								</li>
+								<li>single value or collection based</li>
+								<li>object/object_expression is the JavaScript Object to be passed through the filter function</li>
 								<li>filterName is the filter to be used (e.g., 'filter', 'date', 'uppercase')</li>
-								<li>expression is the predicate to be used for selecting certain elements from a collection (String, Object, or Function callback)</li>
+								<li>expression is the predicate to be used for selecting certain elements from a collection (String, Object, or Function callback...via a function callback, custom filters can be created outside of the .filter function on modules)</li>
 								<li>comparator is means of telling Angular whether the actual and expected items are considered 'equal'</li>
 							</ul>
 						</aside>
@@ -635,38 +634,111 @@ $filter('filterName')(object, expression, comparator)
 						</aside>
 					</section>
 
-
-
 					<section>
-						<h2>Custom Directives - Usage</h2>
+						<h2>Custom Filters - Usage</h2>
 
 						<ul>
-							<li>Enable us to create and encapsulate new functionality and views in reusable and injectable way</li>
-							<li>Can be used as tags, attributes, classes, or comments as specified via the <code class="snippet">restrict</code> property on the Directive Definition Object (DDO)</li>
-							<li>
-								<code class="snippet">E</code> for Element/Tag,
-								<code class="snippet">A</code> for Attribute,
-								<code class="snippet">C</code> for Class,
-								<code class="snippet">M</code> for Comment,
-								Default to <code class="snippet">EA</code>
-							</li>
-							<li>Follow a kebab-case convention for use within the DOM (in JavaScript, use camelCase, Angular handles the conversion)</li>
+							<li>Use the <code class="snippet">filter</code> function and return a function used to filter the object</li>
+							<li>Angular will pass the value or collection to be run through the filter function</li>
+														<pre><code>
+angular.module('MyModule')
+    .filter('capitalize', function() {
+        return function capitalizer(text) {
+            return text.charAt(0).toUpperCase() + text.slice(1);
+        };
+    })
+    .controller('MyController', function($scope) {
+        $scope.heading = 'foobar';
+    });
+							</code></pre>
+							<pre><code>
+&lt;h1&gt;{{heading | capitalize}}&lt;/h1&gt; &lt;!-- &lt;h1&gt;Foobar&lt;/h1&gt;--&gt;
+						</code></pre>
 						</ul>
 
-						<pre><code>
-&lt;my-directive&gt;&lt;/my-directive&gt;
-&lt;div my-directive&gt;&lt;/div&gt;
-&lt;div class=&quot;my-directive&quot;&gt;&lt;/div&gt;
-&lt;!-- directive: my-directive --&gt;
-						</code></pre>
 
 						<aside class="notes">
 							<ul>
-								<li>Directives are akin to Web Components or React Components</li>
-								<li>Attributes are preferred which prevent older IE from complaining and are generally more clear than classes/comments</li>
-								<li></li>
+								<li>Custom Filters benefit from two-way data binding and are executed on each $digest cycle automatically</li>
+								<li>Custom filters for collections are generally the same and single value filters: the collection will be passed to your function and you must return the subset of objects that meet your filtering conditions</li>
+								<li>Additional arguments can be passed into your filter function by colon (:) delimiting the arguments in the expression (e.g., capitlize:onlyStringsStartingWithA => | capitalize:'a'</li>
+								<li>Note that because the generalized 'filter' filter can take a function callback as a predicate, custom filters can be created without using the customer .filter module function</li>
 							</ul>
 						</aside>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h1>Server Interactions</h1>
+					</section>
+
+					<section>
+						<h2>$http</h2>
+
+						<ul>
+							<li><code class="snippet">$http</code> is a service that enables server-side communication via AJAX requests</li>
+							<li><code class="snippet">$http</code> is both a function, whereby an AJAX configuration object is passed in, and an object with convenience <code class="snippet">GET</code>, <code class="snippet">POST</code>, <code class="snippet">DELETE</code>, and <code class="snippet">PUT</code> methods (also exposes HEAD, JSONP, and PATCH)</li>
+							<li>Returns a Promise object based on the <code class="snippet">$q</code> service, with additional <code class="snippet">success</code> and <code class="snippet">error</code> convenience functions</li>
+						</ul>
+						<aside class="notes">
+							<ul>
+								<li>Note the Success and Error functions returned from an $http request are convenience wrappers for Then and Catch promise functions. Success and Error functions are automatically passed in the data, status, headers and config params, where .Then/.Catch are only passed the raw response containing the aforementioned properties.</li>
+								<li>$http responses are wrapped in and $apply call, so if we update $scope bindings based on a response, they will be automatically updated in the View</li>
+								<li>You can bind the $http Promise response to a $scope property and Angular will automatically resolve the Promise value when it is fulfilled</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<h2>$q</h2>
+
+						<ul>
+							<li><code class="snippet">$q</code> is a simplified Promise library implementation that supports <code class="snippet">then</code>, <code class="snippet">catch</code>, <code class="snippet">finally</code>, and <code class="snippet">all</code> methods</li>
+							<li>Exposes both the ES6 style promise or via the deferred API</li>
+						</ul>
+						<pre><code>
+function asyncGreet(name) {
+    return $q(function(resolve, reject) {
+        setTimeout(function() {
+            if (okToGreet(name)) { resolve('Hello, ' + name + '!'); }
+            else { reject('Greeting ' + name + ' is not allowed.'); }
+        }, 1000);
+    });
+}
+							</code></pre>
+
+							<pre><code>
+function asyncGreet(name) {
+    var deferred = $q.defer();
+    setTimeout(function() {
+        if (okToGreet(name)) { deferred.resolve('Hello, ' + name + '!'); }
+        else { deferred.reject('Greeting ' + name + ' is not allowed.'); }
+    }, 1000);
+    return deferred.promise;
+}
+							</code></pre>
+						<aside class="notes">
+							<ul>
+								<li>Note the Success and Error functions returned from an $http request are convenience wrappers for Then and Catch promise functions. Success and Error functions are automatically passed in the data, status, headers and config params, where .Then/.Catch are only passed the raw response containing the aforementioned properties.</li>
+								<li>$http responses are wrapped in and $apply call, so if we update $scope bindings based on a response, they will be automatically updated in the View</li>
+								<li>You can bind the $http Promise response to a $scope property and Angular will automatically resolve the Promise value when it is fulfilled</li>
+							</ul>
+						</aside>
+					</section>
+
+				</section>
+
+				<section>
+					<section>
+						<h1>Testing</h1>
+					</section>
+
+					<section>
+						<h2>Unit Testing</h2>
+					</section>
+
+					<section>
+						<h2>E2E Testing</h2>
 					</section>
 				</section>
 
