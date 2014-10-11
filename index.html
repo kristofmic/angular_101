@@ -49,90 +49,625 @@
 					<h2>Table of Contents</h2>
 					<ol>
 						<li><a href="#/2">Angular Fundamentals</a></li>
-						<li><a href="#/6">Modules</a></li>
-						<li><a href="#/">$scope</a></li>
-						<li><a href="#/">Controllers</a></li>
-						<li><a href="#/">Templating</a></li>
-						<li><a href="#/">Providers (Services and Factories)</a></li>
-						<li><a href="#/">Directives (core / custom)</a></li>
-						<li><a href="#/">Filters (core / custom)</a></li>
-						<li><a href="#/">Routing (ui-router)</a></li>
-						<li><a href="#/">Server Interactions ($http, $resource, and $q)</a></li>
-						<li><a href="#/">Testing (unit and e2e)</a></li>
+						<li><a href="#/3">Modules</a></li>
+						<li><a href="#/4">$scope</a></li>
+						<li><a href="#/5">Controllers</a></li>
+						<li><a href="#/6">Templating</a></li>
+						<li><a href="#/7">Providers (Services and Factories)</a></li>
+						<li><a href="#/8">Directives (core / custom)</a></li>
+						<li><a href="#/9">Filters (core / custom)</a></li>
+						<li><a href="#/10">Server Interactions ($http, $resource, and $q)</a></li>
+						<li><a href="#/11">Testing (unit and e2e)</a></li>
 					</ol>
 				</section>
 
 				<section>
-					<h1>Fundamentals</h1>
+					<section>
+						<h1>Fundamentals</h1>
+					</section>
+
+					<section>
+						<h2>What is Angular?</h2>
+						<ul>
+							<li>MVW or MV* framework</li>
+							<li>Designed to <em>enhance</em> HTML, making it dynamic</li>
+							<li>Removes DOM manipulation</li>
+							<li>Unopinionated approach</li>
+						</ul>
+
+						<aside class="notes">
+
+							<ul>
+								<li>
+									View it as an MVVM framework, where the VM is specifically targeted at linking the UI (View) to the Data/Logic (Model) via two way data-binding.
+								</li>
+								<li>
+									Data lives in a Model, our HTML lives as a tiny template to be rendered as a View, and we use a Controller to connect the two, driving Model and View value changes.
+								</li>
+								<li>
+									Angular keeps the DOM updated with any Model changes, and updates the underlying Model when a DOM input changes. The  Model is simply a pure JavaScript Object for data-binding purposes.
+								</li>
+								<li>
+									Unlike Ember or Rails, Angular provides the tools to develop structured, rich client-side applications, but leaves the structure and organization up to the developer to decide. This can be a double-edged sword. Some people like the freedom to build things in a way they are comfortable with, however in larger teams it can become difficult to coordinate and it's easier to go down a wrong path that must be painfully changed later.
+								</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<h2>Two Way Data-binding</h2>
+						<ul>
+							<li>Synchronizes the View with the Model and vice-versa</li>
+							<li>The underlying model is a plain-old JavaScript Object</li>
+							<li>The models are easily parsed to and from JSON, making server-side communication simple</li>
+							<li>Binding occurs in the templates via <code class="snippet">{{}}</code> or <code class="snippet">ng-bind</code></li>
+							<li>Models can also be two way data-bound via the <code class="snippet">ng-model</code> directive</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>Model becomes the single source of truth since it is always current</li>
+								<li>Any valid type in JavaScript can be bound to the ViewModel</li>
+								<li>Angular manages the data-binding via dirty checking and the $digest cycle, which checks everything in $scope for changes and then makes updates accordingly</li>
+							</ul>
+						</aside>
+
+					</section>
+
+					<section>
+						<h2>Dependency Injection</h2>
+						<ul>
+							<li>Software design pattern for resolving dependencies</li>
+							<li>AngularJS provides the <code class="snippet">$injector</code> service which does this automatically by inspecting the arguments of a function</li>
+							<li>To handle minification/uglification, Angular provides an alernate syntax via an Array and Strings</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>Dependencies are explicitly declared and passed to the object or function</li>
+								<li>The $injector typically does not need to be called explicitly, Angular does the resolving of dependencies for us</li>
+								<li>Angular will throw an error if it cannot resolve a dependency</li>
+							</ul>
+						</aside>
+
+					</section>
 				</section>
 
 				<section>
-					<h2>What is Angular?</h2>
-					<ul>
-						<li>MVW or MV* framework</li>
-						<li>Designed to <strong>enhance</strong> HTML, making it dynamic</li>
-						<li>Removes DOM manipulation</li>
-						<li>Unopinionated approach</li>
-					</ul>
+					<section>
+						<h1>Modules</h1>
+					</section>
 
-					<aside class="notes">
+					<section>
+						<h2>Modules</h2>
+						<ul>
+							<li>Applications are built from Modules</li>
+							<li>Modules are the containers for a component of an application</li>
+							<li>Modules can depend on other modules</li>
+							<li>Modules make our code reusable, limit scope, and enable testability</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Module Syntax</h2>
+							<h4>Setter</h4>
+							<pre><code>
+	angular.module('MyModuleName', [ModuleDependency1, md2, md3, ...]);
+							</code></pre>
+
+							<h4>Getter</h4>
+							<pre><code>
+	angular.module('MyModuleName')
+		.controller('MyController', function() {});
+							</code></pre>
+
+							<aside class="notes">
+								<ul>
+									<li>Modules can have dependencies on other modules, which in turn may have other dependencies of their own</li>
+									<li>The Module dependency declarations allow a service within your Module to use a service from another Module</li>
+									<li>Creating other services in Angular requires you to have an instance of the Module it will be attached to</li>
+									<li>Modules can be stared in JavaScript variables, however with the Getter syntax, this is unnecessary and should be discouraged</li>
+								</ul>
+							</aside>
+					</section>
+
+					<section>
+						<h2>Loading the Module in HTML</h2>
+						<pre><code>
+	&lt;html&gt;
+	  &lt;head&gt;&lt;/head&gt;
+	  &lt;body ng-app=&quot;MyModuleName&quot;&gt;
+	    &lt;h1&gt;Hello World&lt;/h1&gt;
+	  &lt;/body&gt;
+	&lt;/html&gt;
+						</code></pre>
+
+						<aside class="notes">
+							<ul>
+								<li>The ng-app directive takes the Module name as an argument and loads that Module, giving the Module access to and control over the DOM element it was placed on and all of its children. </li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>$scope</h1>
+					</section>
+
+					<section>
+						<h2>$scope</h2>
+						<ul>
+							<li>Represents the ViewModel</li>
+							<li>Anything attached to the $scope object is then accessible in the HTML</li>
+
+							<pre><code>
+	$scope.heading = 'Hello World!';
+							</code></pre>
+
+							<pre><code>
+	&lt;body ng-app=&quot;MyModuleName&quot; ng-app=&quot;MyController&quot;&gt;
+	  &lt;h1&gt;{{heading}}&lt;/h1&gt; &lt;!-- &lt;h1&gt;Hello World!&lt;/h1&gt; --&gt;
+	&lt;/body&gt;
+							</code></pre>
+							<li>$scope is only used in our Controllers and Directives, where we bind data to a view</li>
+							<li>The $rootScope object is the parent of all $scopes</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>$scope is the link between your presentation layer (View) and the data/business logic (Model)</li>
+								<li>It enables the two way data-binding</li>
+								<li>The DOM outside of the scope of the Controller (or Directive) is not accessible via the $scope</li>
+								<li>Properties on $rootScope will be accessible via other $scopes through the prototype chain of inheritance (NOTE: be careful about what you inherit. It's easy to shadow parent properties with child properties that are no longer linked).</li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>Controllers</h1>
+					</section>
+
+					<section>
+						<h2>Controllers</h2>
 
 						<ul>
-							<li>
-								View it as an MVVM framework, where the VM is specifically targeted at linking the UI (View) to the Data/Logic (Model) via two-way data binding.
-							</li>
-							<li>
-								Data lives in a Model, our HTML lives as a tiny template to be rendered as a View, and we use a Controller to connect the two, driving Model and View value changes.
-							</li>
-							<li>
-								Angular keeps the DOM updated with any Model changes, and updates the underlying Model when a DOM input changes. The  Model is simply a pure JavaScript Object for data-binding purposes.
-							</li>
-							<li>
-								Unlike Ember or Rails, Angular provides the tools to develop structured, rich client-side applications, but leaves the structure and organization up to the developer to decide. This can be a double-edged sword. Some people like the freedom to build things in a way they are comfortable with, however in larger teams it can become difficult to coordinate and it's easier to go down a wrong path that must be painfully changed later.
-							</li>
+							<li>Controllers are responsible for setting up the link between your View and Model (i.e., $scope)</li>
 						</ul>
-					</aside>
+							<pre><code>
+	angular.module('MyModuleName')
+		.controller('MyController', function($scope, dependency) {
+	                 $scope.heading = 'Hello World!';
+		});
+							</code></pre>
+
+							<pre><code>
+	// Syntax for minification/uglification
+	angular.module('MyModuleName')
+		.controller('MyController', ['$scope', 'dependency', function($scope, dependency) {
+			$scope.heading = 'Hello World!';
+		});
+							</code></pre>
+
+
+						<aside class="notes">
+							<ul>
+								<li>
+									In the template, the ng-controller directive tells Angular where to bind an instance of a Controller and make the Controller's data and methods available in that DOM scope.
+								</li>
+								<li>Controller function accepts the Controller's name as a String, and a Function that represents the Controller's body</li>
+								<li>To ensure the DI works correctly in minified code, an alternate syntax of passing an Array is used, where the inital values of the Array are the String representation of the Controller's dependencies, and the last argument is the Controller's body (i.e., the Function callback).</li>
+							</ul>
+						</aside>
+					</section>
 				</section>
 
 				<section>
-					<h2>Two Way Data-binding</h2>
-					<ul>
-						<li>Synchronizes the View with the Model and vice-versa</li>
-						<li>The underlying model is a plain-old JavaScript Object</li>
-						<li>The models are easily parsed to and from JSON, making server-side communication simple</li>
-						<li>Binding occurs in the templates via <code>{{}}</code> or <code>ng-bind</code></li>
-						<li>Models can also be two way data-bound via the <code>ng-model</code> directive</li>
-					</ul>
+					<section>
+						<h1>Templating</h1>
+					</section>
 
-					<aside class="notes">
+
+					<section>
+						<h2>Expressions</h2>
 						<ul>
-							<li>Model becomes the single source of truth since it is always current</li>
-							<li>Object Literals, Arrays, Strings, Numbers, Booleans</li>
+							<li>"JavaScript-like" pieces of code that conditionally change the View (DOM) to match the Model</li>
+							<li>Live in <code class="snippet">{{}}</code> or <code class="snippet">ng-bind</code> and evaluated against $scope</li>
+							<li>Angular re-evaluates these expressions during each $digest cycle, making updates based on any changes</li>
 						</ul>
-					</aside>
 
+						<aside class="notes">
+							<ul>
+								<li>Can contain limited bits of JavaScript logic including basic operators (e.g., &&, ||, ?:, >/<, +/-, ===, etc.)</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<h2>Example</h2>
+						<pre><code>
+	$scope.heading = 'Hello World!';
+	$scope.updateHeading = function(newHeading) {
+		$scope.heading = newHeading;
+	}
+						</code></pre>
+
+						<pre><code>
+	&lt;h1&gt;{{heading}}&lt;/h1&gt; &lt;!-- &lt;h1&gt;Hello World!&lt;/h1&gt;--&gt;
+	&lt;button ng-click="updateHeading('Foobar')"&gt;Update&lt;/button&gt; &lt;!-- Click --&gt;
+						</code></pre>
+
+						<pre><code>
+	&lt;h1&gt;{{heading}}&lt;/h1&gt; &lt;!-- &lt;h1&gt;Foobar&lt;/h1&gt;--&gt;
+						</code></pre>
+
+					</section>
 				</section>
 
 				<section>
-					<h2>Dependency Injection</h2>
-					<ul>
-						<li>Software design pattern for resolving dependencies</li>
-						<li>AngularJS provides the <code>$injector</code> service which does this automatically by inspecting the arguments of a function</li>
-						<li>To handle minification/uglification, Angular provides an alernate syntax via an Array and Strings</li>
-					</ul>
+					<section>
+						<h1>Providers</h1>
+					</section>
 
-					<aside class="notes">
+					<section>
+						<h2>Services and Factories</h2>
 						<ul>
-							<li>Dependencies are explicitly declared and passed to the object or function</li>
-							<li>The $injector typically does not need to be called explicitly, Angular does the resolving of dependencies for us</li>
-							<li>Angular will throw an error if it cannot resolve a dependency</li>
+							<li>Containers for our application's Model, where the data and business logic should live</li>
+							<li>Services are invoked with <code class="snippet">new</code>, thus all data/logic should be bound to <code class="snippet">this</code></li>
+							<li>Factories are <em>not</em> invoked with <code class="snippet">new</code> and can return anything (e.g., Functions, Objects, Arrays, simple values)</li>
+							<li>Everything returned from either a Service or Factory is a <em>singleton</em></li>
 						</ul>
-					</aside>
+
+						<aside class="notes">
+							<ul>
+								<li>The fact that they are singletons is very important and powerful. This means that regardless of where a Service or Factory object is used, it's always the same object. This enables us to share data across Controllers and maintain state with our application.</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<h2>Service Syntax</h2>
+
+						<pre><code>
+angular.module('MyModule')
+	.service('MyService', [myService]);
+
+function myService() {
+	this.bar = 'bar';
+	this.doSomething = function doSomething() {
+		return 'foo' + this.bar;
+	}
+}
+						</code></pre>
+
+												<pre><code>
+angular.module('MyModule')
+	.controller('MyController', ['$scope', 'MyService', myController]);
+
+function myController($scope, myService) {
+	$scope.heading = myService.doSomething();
+}
+						</code></pre>
+
+						<pre><code>
+&lt;h1&gt;{{heading}}&lt;/h1&gt; &lt;!-- &lt;h1&gt;foobar&lt;/h1&gt;--&gt;
+						</code></pre>
+
+						<aside class="notes">
+							<ul>
+								<li>Service objects are just constructors that only get invoked once</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<h2>Factories</h2>
+						<ul>
+							<li>Can return anything, but typically an <code class="snippet">Object Literal</code> or <code class="snippet">Function</code></li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>Take advantage of closures and can create privately scope variables</li>
+								<li>When naming Factories, recommend still use the word 'service' unless they are truly a Factory for creating other objects</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<h2>Factory Syntax</h2>
+
+						<pre><code>
+angular.module('MyModule')
+	.factory('MyService', [myService]);
+
+function myService() {
+	var bar = 'bar';
+
+	return {
+			doSomething: doSomething
+	}
+
+	function doSomething() {
+		return 'foo' + bar;
+	}
+}
+						</code></pre>
+
+												<pre><code>
+angular.module('MyModule')
+	.controller('MyController', ['$scope', 'MyService', myController]);
+
+function myController($scope, myService) {
+	$scope.heading = myService.doSomething();
+}
+						</code></pre>
+					</section>
+
+					<section>
+						<h2>Providers</h2>
+						<ul>
+							<li>Used throughout your application just like Factories or Services, however they can also be passed into the <code class="snippet">.config()</code> of your Module</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>The config of a module is executed before the DI invokes the Service or Factory functions, enabling you to setup certain parts of your service/factory</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<h2>Provider Syntax</h2>
+
+						<pre><code>
+angular.module('MyModule')
+    .provider('MyService', function() {
+        var bar = 'bar';
+
+    return {
+        setBar: function(newBar) { bar = newBar; },
+        $get: function() {
+            return {
+                doSomething: function() { return 'foo' + bar; }
+            };
+        }
+    };
+  });
+						</code></pre>
+
+												<pre><code>
+angular.module('MyModule')
+    .config(function(MyServiceProvider) {
+        MyServiceProvider.setBar('baz');
+    })
+    .controller('MyController', function($scope, MyService) {
+        $scope.heading = MyService.doSomething();
+    });
+						</code></pre>
+
+						<aside class="notes">
+							<ul>
+								<li>Service objects are just constructors that only get invoked once</li>
+							</ul>
+						</aside>
+					</section>
 
 				</section>
 
 				<section>
-					<h1>Modules</h1>
+					<section>
+						<h1>Directives</h1>
+					</section>
+
+					<section>
+						<h2>What are Directives?</h2>
+
+						<ul>
+							<li>Powerhouses of AngularJS and are the underlying components that make a rich client-side application</li>
+							<li>Can enhance existing elements with functionality (e.g., ng-required, ng-click)</li>
+							<li>Can extend functionality to previously non-functional elements (e.g., ng-repeat, ng-class, ng-show/hide) </li>
+							<li>Can be brand-new elements with their own functionality (e.g., ng-include)</li>
+							<li>Directives can be set via custom element tags, attributes, classes, or uncommonly as comments</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>Anything you previously did with jQuery where you reached into the DOM (e.g., selectors) can be done via Angular Directives</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+
+						<h2>Common Examples</h2>
+
+						<ul>
+							<li><code class="snippet">ng-repeat</code> provides a repeater for displaying the same template over a collection of like elements</li>
+							<li><code class="snippet">ng-model</code> allows us to bind HTML inputs to Models on our $scope</li>
+							<li><code class="snippet">ng-click</code> allows us to handle click events on buttons, anchors or any other element, with the function bound only to the local $scope</li>
+							<li><code class="snippet">ng-href</code>/<code class="snippet">ng-src</code> allow us to dynamically set href and src attributes. Important since we want angular to resolve the href/src before it's clicked or the image downloaded</li>
+							<li><code class="snippet">ng-class</code> allows us to dynamically add/remove classes to elements</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Common Examples Cont.</h2>
+
+						<ul>
+							<li><code class="snippet">ng-show</code>/<code class="snippet">ng-hide</code> allow us to toggle the display property of elements based on a boolean (or truthy/falsy) value</li>
+							<li><code class="snippet">ng-if</code> will actually remove the element from the DOM and the $scope it creates</li>
+							<li><code class="snippet">ng-switch</code> removes elements from the DOM based on a value (doesn't have to be boolean) and can apply to multiple elements like a switch statement </li>
+							<li><code class="snippet">ng-bind</code> is an alternative to <code class="snippet">{{}}</code> that prevents edge-cases where there is a brief flicker of the <code class="snippet">{{}}</code> before Angular resolves the value</li>
+							<li><code class="snippet">ng-include</code> allows you to pull in a template of HTML from the server or pre-loaded in the template cache</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Custom Directives - Usage</h2>
+
+						<ul>
+							<li>Enable us to create and encapsulate new functionality and views in reusable and injectable way</li>
+							<li>Can be used as tags, attributes, classes, or comments as specified via the <code class="snippet">restrict</code> property on the Directive Definition Object (DDO)</li>
+							<li>
+								<code class="snippet">E</code> for Element/Tag,
+								<code class="snippet">A</code> for Attribute,
+								<code class="snippet">C</code> for Class,
+								<code class="snippet">M</code> for Comment,
+								Default to <code class="snippet">EA</code>
+							</li>
+							<li>Follow a kebab-case convention for use within the DOM (in JavaScript, use camelCase, Angular handles the conversion)</li>
+						</ul>
+
+						<pre><code>
+&lt;my-directive&gt;&lt;/my-directive&gt;
+&lt;div my-directive&gt;&lt;/div&gt;
+&lt;div class=&quot;my-directive&quot;&gt;&lt;/div&gt;
+&lt;!-- directive: my-directive --&gt;
+						</code></pre>
+
+						<aside class="notes">
+							<ul>
+								<li>Directives are akin to Web Components or React Components</li>
+								<li>Attributes are preferred which prevent older IE from complaining and are generally more clear than classes/comments</li>
+								<li></li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<h2>Custom Directives - Templates</h2>
+
+						<ul>
+							<li>Directives can be used as templating engines, so you not only extend an element with functionality, but also extend the DOM with content</li>
+							<li><code class="snippet">template</code> and <code class="snippet">templateUrl</code> are the two ways of associating DOM content with a Directive</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>template is just a string representing HTML</li>
+								<li>templateUrl is a reference to a public HTML asset on your server, a pre-existing asset in the $templateCache, or a template defined as a custom script tag using the custom type of "text/ng-template"</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<h2>Custom Directives - DDO</h2>
+
+						<ul>
+							<li>The Directive Definition Object is the API for creating Directives</li>
+							<li>Simple JavaScript Object with certain properties</li>
+						</ul>
+
+							<pre><code>
+function myDirective() {
+    return {
+        restrict: 'EA', // how the directive can be used
+        templateUrl: 'myDirective.html', // template HTML
+        scope: true, // how we setup the directive's scope
+                     // true => new scope prototypally inherited from parent
+                     // false => parent scope
+                     // object literal => isolate scope where custom properties can be injected
+        link: function link(scope, elem, attrs) {}, // provides DOM access
+        controller: function myController($scope) {}, // like other controllers, except specific to the directive's scope
+
+    }
+}
+							</code></pre>
+
+						<aside class="notes">
+							<ul>
+								<li>The link function is executed after the Directive is compiled and the template (if provided) is inserted into the DOM, allowing us to bind event listeners or perform DOM manipulation based on scope properties or other logic</li>
+								<li>It's important to approach DI with Controllers just as with other Controllers, so to handle minification/uglification you must use Array and String notation. This does not apply to Link functions.</li>
+								<li>Other less common DDO properties are listed <a href="https://docs.angularjs.org/api/ng/service/$compile">here</a></li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>Filters</h1>
+					</section>
+
+					<section>
+						<h2>What are Filters?</h2>
+						<ul>
+							<li>Provide a means of processing data and returning a transformed version of it (e.g., filtered list, specific date format)</li>
+							<li>Filters can be used in templates via the <code class="snippet">|</code> character</li>
+							<pre><code>
+{{ object_expression | filterName : expression : comparator}}
+							</code></pre>
+							<li>Filters can be used in JavaScript via the <code class="snippet">$filter</code> service</li>
+							<pre><code>
+$filter('filterName')(object, expression, comparator)
+							</code></pre>
+							<li>Filters do not alter the underlying data</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>
+									object/object_expression is the JavaScript Object to be passed through the filter function
+								</li>
+								<li>filterName is the filter to be used (e.g., 'filter', 'date', 'uppercase')</li>
+								<li>expression is the predicate to be used for selecting certain elements from a collection (String, Object, or Function callback)</li>
+								<li>comparator is means of telling Angular whether the actual and expected items are considered 'equal'</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+
+						<h2>Common Examples</h2>
+
+						<ul>
+							<li><code class="snippet">date</code> converts a date to a specified format and timezone</li>
+							<li><code class="snippet">limitTo</code> limits the elements returned in the collection to the specified number</li>
+							<li><code class="snippet">orderBy</code> orders the elements returned in the collection based on the predicate</li>
+							<li><code class="snippet">linky</code> finds links in a snippet of text and converts them to actual Anchor links</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>orderBy defaults to descending order, but can be reversed with a third boolean parameter</li>
+							</ul>
+						</aside>
+					</section>
+
+
+
+					<section>
+						<h2>Custom Directives - Usage</h2>
+
+						<ul>
+							<li>Enable us to create and encapsulate new functionality and views in reusable and injectable way</li>
+							<li>Can be used as tags, attributes, classes, or comments as specified via the <code class="snippet">restrict</code> property on the Directive Definition Object (DDO)</li>
+							<li>
+								<code class="snippet">E</code> for Element/Tag,
+								<code class="snippet">A</code> for Attribute,
+								<code class="snippet">C</code> for Class,
+								<code class="snippet">M</code> for Comment,
+								Default to <code class="snippet">EA</code>
+							</li>
+							<li>Follow a kebab-case convention for use within the DOM (in JavaScript, use camelCase, Angular handles the conversion)</li>
+						</ul>
+
+						<pre><code>
+&lt;my-directive&gt;&lt;/my-directive&gt;
+&lt;div my-directive&gt;&lt;/div&gt;
+&lt;div class=&quot;my-directive&quot;&gt;&lt;/div&gt;
+&lt;!-- directive: my-directive --&gt;
+						</code></pre>
+
+						<aside class="notes">
+							<ul>
+								<li>Directives are akin to Web Components or React Components</li>
+								<li>Attributes are preferred which prevent older IE from complaining and are generally more clear than classes/comments</li>
+								<li></li>
+							</ul>
+						</aside>
+					</section>
 				</section>
 
 			</div>
