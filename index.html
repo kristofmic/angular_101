@@ -12,7 +12,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/moon.css" id="theme">
+		<link rel="stylesheet" href="css/theme/sky.css" id="theme">
 
 		<!-- For syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -95,9 +95,25 @@
 					</section>
 
 					<section>
+						<img src="https://docs.google.com/drawings/d/1IlCOBPEATBLUvc4vAZU8CatSZoh9g_rtDrz718gfptU/pub?w=960&amp;h=720">
+
+						<aside class="notes">
+							How does Angular work behind the scenes?
+							<ol>
+								<li>HTML loads, Angular loads, Angular waits for the onContentReady event</li>
+								<li>Angular inspects the DOM looking for an ng-app</li>
+								<li>Angular loads the module, compiling all of the directives, controllers, services, etc</li>
+								<li>Inspects the DOM and looks for what directives are on the page</li>
+								<li>generates a template for each directive</li>
+								<li>binds the template with the directive through a scope</li>
+							</ol>
+						</aside>
+					</section>
+
+					<section>
 						<h2>Two-Way Data binding</h2>
 						<ul>
-							<li>Synchronizes the View with the Model and vice-versa</li>
+							<li>Synchronizes the View with the Model and vice-versa via a $digest cycle and dirty checking</li>
 							<li>The underlying model is a plain-old JavaScript Object</li>
 							<li>The models are easily parsed to and from JSON, making server-side communication simple</li>
 							<li>Binding occurs in the templates via <code class="snippet">{{}}</code> or <code class="snippet">ng-bind</code></li>
@@ -110,6 +126,14 @@
 								<li>Any valid type in JavaScript can be bound to the ViewModel</li>
 								<li>Angular manages the data-binding via dirty checking and the $digest cycle, which checks everything in $scope for changes and then makes updates accordingly</li>
 							</ul>
+
+							$digest and $apply cycle
+							<ul>
+								<li>Angular achieves two-way data binding by waiting for stuff to happen (e.g., click, typing in a input), then go through and figure out what has changed on $scope (always watching what's on scope).</li>
+								<li>If values are different, then it kicks off an event watcher to trigger some functionality</li>
+								<li>Can manually kick of the $digest cycle via the $apply function (preferred over $digest because it includes some built in error handling)</li>
+								<li>Can also manually plug in a $watch function, to kick off some functionality when a value changes. These are usually created implicitly via directives.</li>
+							</ul>
 						</aside>
 
 					</section>
@@ -120,6 +144,7 @@
 							<li>Software design pattern for resolving dependencies</li>
 							<li>AngularJS provides the <code class="snippet">$injector</code> service which does this automatically by inspecting the arguments of a function</li>
 							<li>To handle minification/uglification, Angular provides an alernate syntax via an Array and Strings</li>
+							<li>Lazy loaded</li>
 						</ul>
 
 						<aside class="notes">
@@ -127,6 +152,7 @@
 								<li>Dependencies are explicitly declared and passed to the object or function</li>
 								<li>The $injector typically does not need to be called explicitly, Angular does the resolving of dependencies for us</li>
 								<li>Angular will throw an error if it cannot resolve a dependency</li>
+								<li>Lazy loading works by first checking cache when a dependency is requested, if in cache, will return that. otherwise it will execute the dependency's factory function to instantiate a new one and give you that, adding the value to cache for future requests</li>
 							</ul>
 						</aside>
 
@@ -259,6 +285,7 @@
 								</li>
 								<li>Controller function accepts the Controller's name as a String, and a Function that represents the Controller's body</li>
 								<li>To ensure the DI works correctly in minified code, an alternate syntax of passing an Array is used, where the inital values of the Array are the String representation of the Controller's dependencies, and the last argument is the Controller's body (i.e., the Function callback).</li>
+								<li>Controllers should not own the domain model, they should be responsible for setting up the ViewModel and linking functionality of the ViewModel to the appropriate services</li>
 							</ul>
 						</aside>
 					</section>
