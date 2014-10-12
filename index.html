@@ -694,19 +694,8 @@ angular.module('MyModule')
 
 						<ul>
 							<li><code class="snippet">$q</code> is a simplified Promise library implementation that supports <code class="snippet">then</code>, <code class="snippet">catch</code>, <code class="snippet">finally</code>, and <code class="snippet">all</code> methods</li>
-							<li>Exposes both the ES6 style promise or via the deferred API</li>
+							<li>Exposes a deferred API</li>
 						</ul>
-						<pre><code>
-function asyncGreet(name) {
-    return $q(function(resolve, reject) {
-        setTimeout(function() {
-            if (okToGreet(name)) { resolve('Hello, ' + name + '!'); }
-            else { reject('Greeting ' + name + ' is not allowed.'); }
-        }, 1000);
-    });
-}
-							</code></pre>
-
 							<pre><code>
 function asyncGreet(name) {
     var deferred = $q.defer();
