@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>Angular Tut by Kristofmic</title>
+		<title>Angular 101 by Kristofmic</title>
 
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -40,7 +40,7 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-					<h1>Angular Tuts</h1>
+					<h1>Angular 101</h1>
 					<h3>An introduction to AngularJS</h3>
 					<p><small>By <a href="https://github.com/kristofmic">Chris Hourihan</a></small></p>
 				</section>
@@ -723,11 +723,89 @@ function asyncGreet(name) {
 					</section>
 
 					<section>
-						<h2>Unit Testing</h2>
+						<h2>Tech Overview</h2>
+
+						<ul>
+							<li><a href="http://karma-runner.github.io/0.12/index.html">Karma</a> - Unit Test Runner</li>
+							<li><a href="https://github.com/angular/protractor">Protractor</a> - E2E Test Runner</li>
+							<li><a href="http://jasmine.github.io/2.0/introduction.html">Jasmine</a> - Test Framework and Assertion Library</li>
+							<li><a href="http://visionmedia.github.io/mocha/">Mocha</a>, <a href="http://chaijs.com/">Chai</a>, and <a href="http://sinonjs.org/">Sinon</a> - Test Framework and Assertion Library</li>
+							<li><a href="https://docs.angularjs.org/api/ngMock">ngMock</a> - AngularJS Module to Mock and Inject Services </li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Unit Testing - Setting Up Tests</h2>
+
+						<ol>
+							<li>Load the module of the component being tested
+							<pre><code>
+describe('MyController', function() {
+	beforeEach(module('ch.Main'));
+});
+							</code></pre>
+							</li>
+
+							<li>Set stubbed out or mocked out services
+							<pre><code>
+beforeEach(module(function($provide) {
+  stubbedService = {
+  	mockMethod: jasmine.createSpy('mockedMethod')
+  };
+
+  $provide.value('MyService', stubbedService);
+}));
+							</code></pre>
+							</li>
+						</ol>
+					</section>
+
+					<section>
+						<h2>Unit Testing - Setting Up Tests Cont.</h2>
+
+						<ol start="3">
+							<li>Inject any other needed services and load your component
+							<pre><code>
+beforeEach(inject(function($rootScope, $injector, $controller) {
+  anotherService = $injector.get('anotherService');
+  scope = $rootScope.$new();
+
+  myController = $controller('MyController', {
+  	$scope: scope,
+  	anotherService: anotherService
+  })
+}));
+							</code></pre>
+							</li>
+
+							<li> Write your tests!
+								<pre><code>
+it('should exist', function() {
+  expect(myController).toBeDefined();
+});
+								</code></pre>
+							</li>
+						</ol>
 					</section>
 
 					<section>
 						<h2>E2E Testing</h2>
+
+						<ul>
+							<li>Protractor is built on top of WebDriverJS, which wraps a Selenium server for doing browser-based automation testing</li>
+							<li>Code-based API for interacting with elements on the page</li>
+							<li>Works with both Jasmine and Mocha/Chai/Sinon testing frameworks</li>
+						</ul>
+						<pre><code>
+it('should default to the correct page', function() {
+  expect(browser.getCurrentUrl()).toContain('/home');
+});
+						</code></pre>
+						<pre><code>
+it('should set the correct heading', function() {
+  expect(element(by.css('.heading')).getText()).toEqual('Hello World!');
+});
+						</code></pre>
 					</section>
 				</section>
 
