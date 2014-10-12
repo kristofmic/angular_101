@@ -322,6 +322,8 @@
 
 						<aside class="notes">
 							<ul>
+								<li>Take advantage of closures and can create privately scope variables</li>
+								<li>When naming Factories, recommend still use the word 'service' unless they are truly a Factory for creating other objects</li>
 								<li>The fact that they are singletons is very important and powerful. This means that regardless of where a Service or Factory object is used, it's always the same object. This enables us to share data across Controllers and maintain state with our application.</li>
 							</ul>
 						</aside>
@@ -358,20 +360,6 @@ function myController($scope, myService) {
 						<aside class="notes">
 							<ul>
 								<li>Service objects are just constructors that only get invoked once</li>
-							</ul>
-						</aside>
-					</section>
-
-					<section>
-						<h2>Factories</h2>
-						<ul>
-							<li>Can return anything, but typically an <code class="snippet">Object Literal</code> or <code class="snippet">Function</code></li>
-						</ul>
-
-						<aside class="notes">
-							<ul>
-								<li>Take advantage of closures and can create privately scope variables</li>
-								<li>When naming Factories, recommend still use the word 'service' unless they are truly a Factory for creating other objects</li>
 							</ul>
 						</aside>
 					</section>
@@ -415,6 +403,7 @@ function myController($scope, myService) {
 						<aside class="notes">
 							<ul>
 								<li>The config of a module is executed before the DI invokes the Service or Factory functions, enabling you to setup certain parts of your service/factory</li>
+								<li>Other Providers include Values and Constants, to set simple values. Constants are accessible at during the config phase of a module.</li>
 							</ul>
 						</aside>
 					</section>
@@ -449,9 +438,7 @@ angular.module('MyModule')
 						</code></pre>
 
 						<aside class="notes">
-							<ul>
-								<li>Service objects are just constructors that only get invoked once</li>
-							</ul>
+
 						</aside>
 					</section>
 
